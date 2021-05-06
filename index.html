@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avengers_Game</title>
+    <style>
+        *{margin:0;}
+        body{
+            background-color: black;
+        }
+        #score{
+            text-align: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        #game{
+            width: 800px;
+            height: 400px;
+            margin: auto;
+            background-image: url(Assests/background_image.png);
+            background-size: contain;
+        }
+        .player{
+            
+            width: 32px;
+            height: 48px;
+            overflow: hidden;
+            position: relative;
+
+        }
+        #player1{
+            top: 278px;
+            left: 60px;
+        }
+        #player1 img{
+            position: relative;
+            top: -96px;
+        }
+        #player2{
+            top:230px;
+            left:760px;
+        }
+        #player2 img{
+            position: relative;
+            top: -46px;
+        }
+
+        .walk{
+            animation: walking .5s steps(4) infinite;
+        }
+        @keyframes walking{
+            0%{transform: translate3d(0,0,0);}
+            100%{transform: translate3d(-100%,0,0);}
+        }
+
+        .jump{
+            animation: jumping .5s;
+        }
+        @keyframes jumping{
+            0%{top: 276px;}
+            50%{top: 176px;}
+            100%{top: 276px;}
+        }
+        .attack{
+            animation: attacking 2s linear infinite;
+        }
+
+
+        @keyframes attacking{
+            0%{left: 760px;}
+            100%{left: 0;}
+        }
+
+        .dead{
+            transform-origin: bottom left;
+            animation: dying .5s forwards;
+        }
+        @keyframes dying{
+            0%{transform: rotate(0deg);}
+            100%{transform: rotate(-90deg);}
+        }
+    </style>
+</head>
+<body>
+    <div id="score">
+        Press SPACEBAR to start
+    </div>
+    <div id="game">
+        <div id="player1" class="player">
+            <img src="Assests/loki.png">
+        </div>
+        <div id="player2" class="player">
+            <img src="Assests/thor.png">
+        </div>
+    </div>
+    <script>
+        player1 = document.getElementById("player1");
+        player2 = document.getElementById("player2");
+        score = document.getElementById("score");
+        var gameOver = false;
+        var distance = 0;
+
+        document.addEventListener("keypress", function(event){
+            if(!player1.classList.contains("jump")){
+                player1.classList.add("jump");
+                setTimeout(
+                    function(){
+                        player1.classList.remove("jump");
+                    },
+                    500
+                );
+            }
+
+            player1.children[0].classList.add("walk");
+            player1.classList.remove("dead");
+            player2.children[0].classList.add("walk");
+            player2.classList.add("attack");
+
+            setInterval(()=>{
+                player1Top = parseInt(window.getComputedStyle(player1).getPropertyValue("top"));
+
+                player2Left = parseInt(window.getComputedStyle(player2).getPropertyValue("left"));
+
+                if(player2Left > 60 && player2Left <= 82 && player1Top >= 228){
+                    player1.children[0].classList.remove("walk");
+                    player1.classList.add("dead")
+                    player2.children[0].classList.remove("walk");
+                    player2.classList.remove("attack");
+                    player2.style.left = player2Left + "px";
+
+                    gameOver = true;
+                    distance = 0;
+                }else{
+                    distance++;
+                    score.innerHTML = "Score: "+parseInt(distance/100);
+                }
+            },10);
+        });
+
+        
+    </script>
+</body>
+</html>
